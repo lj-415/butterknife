@@ -1,10 +1,10 @@
 package butterknife.compiler;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
-import static butterknife.compiler.ButterKnifeProcessor.VIEW_TYPE;
-
-final class FieldViewBinding implements ViewBinding {
+final class FieldViewBinding implements MemberViewBinding {
   private final String name;
   private final TypeName type;
   private final boolean required;
@@ -23,15 +23,18 @@ final class FieldViewBinding implements ViewBinding {
     return type;
   }
 
+  public ClassName getRawType() {
+    if (type instanceof ParameterizedTypeName) {
+      return ((ParameterizedTypeName) type).rawType;
+    }
+    return (ClassName) type;
+  }
+
   @Override public String getDescription() {
     return "field '" + name + "'";
   }
 
   public boolean isRequired() {
     return required;
-  }
-
-  public boolean requiresCast() {
-    return !VIEW_TYPE.equals(type.toString());
   }
 }
